@@ -1,0 +1,20 @@
+<FILENAME>ProductService.java</FILENAME>
+<CODE>
+package com.example.service;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Service;
+
+@Slf4j
+@Service
+public class ProductService {
+
+    /**
+     * Lấy thông tin sản phẩm và lưu vào cache "flash-sale".
+     * Sử dụng thuộc tính sync = true để ngăn chặn hiện tượng Cache Stampede.
+     * Khi cache hết hạn hoặc chưa tồn tại, chỉ có 1 thread duy nhất truy xuất xuống Database,
+     * các thread khác đồng thời truy cập cùng id sẽ bị lock và chờ kết quả từ thread đầu tiên.
+     */
+    @Cacheable(value = "flash-sale", key = "#id", sync = true)
+    public String getProductById(Long id) {
